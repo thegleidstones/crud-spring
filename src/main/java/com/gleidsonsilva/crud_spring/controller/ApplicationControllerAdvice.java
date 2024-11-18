@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class ApplicationControllerAdvice {
@@ -31,6 +32,18 @@ public class ApplicationControllerAdvice {
         return exception.getConstraintViolations().stream()
                 .map((error -> error.getPropertyPath() + " " + error.getMessage()))
                 .reduce("", (acc, error) -> acc + error + "\n");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception) {
+        if (exception != null && exception.getRequiredType() != null) {
+            String type = exception.getRequiredType().getName();
+            String[] typeParts = type.split("\\.");
+            String typeName = typeParts[typeParts.length -1];
+            return exception.getName() + " should be of type " + typeName;
+        }
+        return "Argument type not valid";
     }
 
 }
