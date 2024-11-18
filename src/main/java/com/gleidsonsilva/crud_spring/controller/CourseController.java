@@ -44,12 +44,6 @@ public class CourseController {
         return courseService.update(id, courseDTO);
     }
 
-    @PutMapping("/{id}/tests")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateForTests(@PathVariable @NotNull @Positive Long id, @RequestBody @Valid @NotNull CourseDTO courseDTO) {
-        courseService.updateForTests(id, courseDTO);
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @NotNull @Positive Long id) {
